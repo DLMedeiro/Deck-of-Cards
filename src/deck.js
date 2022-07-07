@@ -5,52 +5,34 @@ import axios from "axios";
 
 
 const GetDeckOfCards = () => {
-    const apiId = "pmmxyndwk09o";
+    const apiId = "5oioxz895zcn";
 
-
+    const [card, setCard] = useState(null)
+    const [drawnCards, setDrawnCards] = useState([])
 
     // useEffect(() => {
-        async function getDeck(id) {
-            let newDeckAPICall = "http://deckofcardsapi.com/api/deck/" + id + "/draw/?count=52"
-            console.log(id)
-            const res = await axios.get(newDeckAPICall)
-            const card = res.data.cards
+        async function drawCard() {
+            const res = await axios.get(`http://deckofcardsapi.com/api/deck/${apiId}/draw/?count=1`)
             // const deck = card.map(({value, suit}) => ({[value]: suit}))
-            const deck = card.map(({value, suit}) => (`${value} of ${suit}`))
-            console.log(deck)
-            ShowCard();
-            return INITIAL_STATE = deck
-    
+            const cardData = (res.data.cards.map(({value, suit}) => ([`${value} of ${suit}`]))) ;
+
+            setCard(cardData)
+            addCard(cardData)
+            // console.log(card)
         }
-
-    const [deck, setDeck] = useState(INITIAL_STATE)
-
-
-        // getDeck(apiId)
+        // drawCard()
     // }, [])
 
-    // useEffect(() => {
-    //     async function newDeck() {
-    //         const res = await axios.get("http://deckofcardsapi.com/api/deck/new/")
-    //         setDeckId(res.data.deck_id)
-    //         console.log(deckId)
-    //     }
-    //     newDeck();
-    // }, [])
-
-    const draw = () => {
-        getDeck(apiId)
+    function addCard(card) {
+        setDrawnCards(drawnCards => [...drawnCards, card]) 
     }
 
-    const ShowCard = () => {
-        deck.map((cardData) => <div>{cardData}</div>)
-    }
 
 
     return (
         <div>
-            <button onClick={draw}>Draw</button>
-            
+            <button onClick={drawCard}>Draw Card</button>
+            {drawnCards.length > 0 ? drawnCards.map((c) => <li>{c}</li>) : ''}
         </div>
     )
 
