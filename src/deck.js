@@ -1,38 +1,50 @@
-import React, {useState, useEffect, useInsertionEffect}from "react";
-import Card from './card'
+import React, {useState, useEffect}from "react";
 import axios from "axios";
 
-
-
 const GetDeckOfCards = () => {
-    const apiId = "5oioxz895zcn";
 
-    const [card, setCard] = useState(null)
     const [drawnCards, setDrawnCards] = useState([])
+    const [cardDeck, setCardDeck] = useState([]);
+    const [count, setCount] = useState(0)
+    const [fullDeck, setFullDeck] = useState(false)
 
-    // useEffect(() => {
-        async function drawCard() {
-            const res = await axios.get(`http://deckofcardsapi.com/api/deck/${apiId}/draw/?count=1`)
+    useEffect(() => {
+        async function drawDeck() {
+            const res = await axios.get("http://deckofcardsapi.com/api/deck/new/draw/?count=52")
             // const deck = card.map(({value, suit}) => ({[value]: suit}))
-            const cardData = (res.data.cards.map(({value, suit}) => ([`${value} of ${suit}`]))) ;
+            const cardDeck = (res.data.cards.map(({value, suit}) => ([`${value} of ${suit}`]))) ;
+            
+            setFullDeck(false)
+            setCardDeck(cardDeck)
+     }
+     drawDeck()
+ }, [fullDeck])
 
-            setCard(cardData)
+    const drawCard = () => {
+        if (count <= 51) {
+            const cardData = cardDeck[count]
+            setCount(count + 1)
             addCard(cardData)
-            // console.log(card)
+        } else {
+            setDrawnCards([])
+            setFullDeck(true)
+            setCount(0)
+            alert("No More Cards in Deck")
         }
-        // drawCard()
-    // }, [])
+    }
 
     function addCard(card) {
         setDrawnCards(drawnCards => [...drawnCards, card]) 
     }
 
-
-
     return (
         <div>
             <button onClick={drawCard}>Draw Card</button>
-            {drawnCards.length > 0 ? drawnCards.map((c) => <li>{c}</li>) : ''}
+            <p>
+            {drawnCards.length === 0 ? 
+                'Draw a card to start':
+                drawnCards.map((c) => <li>{c}</li>)}
+            </p>
         </div>
     )
 
