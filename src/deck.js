@@ -25,37 +25,39 @@ const GetDeckOfCards = () => {
     }, [fullDeck])
     
 
+    function counter(num){
+        num = num + 1;
+        DrawCard(num)
+    }
+
+    const timer = () => {
+        if (drawnCards.length > 52 || drawnCards.length == 0) {
+            num = 0
+            console.log(num)
+            setInterval(() => {
+                num = num + 1
+                DrawCard(num)
+                console.log(drawnCards.length)
+            },100)
+        } else {
+            num = drawnCards.length
+            setInterval((num) => {
+                num = num + 1
+                DrawCard(num)
+            },100)
+        };
+    }
     // const counter = () => {
-    //     console.log(check)
-    //     if (check == null) {
-    //         if (num > 52) {
-    //             let num = 0
-    //             setCheck(setInterval(() => {
-    //                 setCount(num +1)
-    //                 console.log(num)
-    //                 DrawCard(num)
-    //             }, 100))
-    //         } else {
-    //             let num = 0;
-    //             setCheck(setInterval(() => {
-    //                 setCount(num + 1)
-    //                 console.log(num)
-    //                 DrawCard(num)
-    //             }, 100))
-    //         } 
+    //     if (check == null && !isPaused) {
+    //         let num = 0
+    //         setCheck(setInterval(() => {
+    //             num = num +1
+    //             // console.log(num)
+    //             console.log(`num = ${num}`)
+    //             DrawCard(num)
+    //         }, 1000))
     //     }
     // }
-    const counter = () => {
-        if (check == null && !isPaused) {
-            let num = 0
-            setCheck(setInterval(() => {
-                num = num +1
-                // console.log(num)
-                console.log(`num = ${num}`)
-                DrawCard(num)
-            }, 1000))
-        }
-    }
     
     function stop () {
         if (!isPaused) {
@@ -90,10 +92,11 @@ const GetDeckOfCards = () => {
     function DrawCard(count) {
         // setCount(num )
         // console.log(count)
-        if (count <= 51) {
+        if (count <= 52) {
             const cardData = cardDeck[count]
             addCard(cardData)
             // console.log(`this1 ${count}`)  
+            console.log(drawnCards.length)
         } else {
             // console.log(`this2 ${count}`)  
             setDrawnCards([])
@@ -109,7 +112,8 @@ const GetDeckOfCards = () => {
 
     return (
         <div>
-            {check == null? <button onClick={counter}>Draw Card</button> : <button onClick={stop}>Stop</button>}
+            <button onClick={timer}>Draw Card</button>
+            {/* {check == null? <button onClick={counter}>Draw Card</button> : <button onClick={stop}>Stop</button>} */}
 
             <div>
             {drawnCards.length === 0 ? 
