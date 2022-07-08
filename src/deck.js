@@ -1,13 +1,14 @@
 import React, {useState, useEffect}from "react";
 import axios from "axios";
 
-const GetDeckOfCards = () => {
 
+const GetDeckOfCards = () => {
+    
     const [drawnCards, setDrawnCards] = useState([])
     const [cardDeck, setCardDeck] = useState([]);
-    const [count, setCount] = useState(0)
     const [fullDeck, setFullDeck] = useState(false)
-
+    const [count, setCount] = useState(0)
+    
     useEffect(() => {
         async function drawDeck() {
             const res = await axios.get("http://deckofcardsapi.com/api/deck/new/draw/?count=52")
@@ -16,14 +17,27 @@ const GetDeckOfCards = () => {
             
             setFullDeck(false)
             setCardDeck(cardDeck)
-     }
-     drawDeck()
- }, [fullDeck])
+        }
+        drawDeck()
+    }, [fullDeck])
+    
 
-    const drawCard = () => {
+    const counter = () => {
+        let num = 0
+        setInterval(() => {
+            num = num+1
+            if (num <= 51) {
+                DrawCard(num)
+            } else {
+                setFullDeck(true)
+            }
+        }, 1000)
+    }
+    
+    function DrawCard(num) {
         if (count <= 51) {
-            const cardData = cardDeck[count]
             setCount(count + 1)
+            const cardData = cardDeck[num]
             addCard(cardData)
         } else {
             setDrawnCards([])
@@ -39,12 +53,12 @@ const GetDeckOfCards = () => {
 
     return (
         <div>
-            <button onClick={drawCard}>Draw Card</button>
-            <p>
+            <button onClick={counter}>Draw Card</button>
+            <div>
             {drawnCards.length === 0 ? 
                 'Draw a card to start':
-                drawnCards.map((c) => <li>{c}</li>)}
-            </p>
+                drawnCards.map((c) => <div>{c}</div>)}
+            </div>
         </div>
     )
 
