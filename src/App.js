@@ -1,10 +1,10 @@
-import './App.css';
-import GetDeckOfCards from './deck'
+import "./App.css";
+import GetDeckOfCards from "./Deck";
 
 function App() {
   return (
     <div className="App">
-      <GetDeckOfCards/>
+      <GetDeckOfCards />
     </div>
   );
 }
