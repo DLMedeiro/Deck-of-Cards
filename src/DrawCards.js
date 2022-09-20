@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import PullCards from "./PullCards";
 import Card from "./Card";
 
 const DrawCards = () => {
+  const timerId = useRef();
   const [ready, setReady] = useState(false);
-
+  const [draw, setDraw] = useState(false);
   const [drawnCards, setDrawnCards] = useState([]);
+  const [num, setNum] = useState(0);
+  const [pause, setPause] = useState(true);
+
   const [fullDeck, setFullDeck] = useState(false);
-  const [num, setNum] = useState(drawnCards.length);
   const [sendRequest, setSendRequest] = useState(false);
   //   send use effect through onClick
 
@@ -21,9 +24,41 @@ const DrawCards = () => {
         setCardDeck(
           res.data.cards.map(({ value, suit }) => [`${value} of ${suit}`])
         );
-        setReady(true);
+        console.log(cardDeck);
+        // setReady(true);
       });
-  }, [ready]);
+  }, [draw]);
+
+  useEffect(() => {
+    timerId.current = setInterval(() => {
+      if (!pause) {
+        setNum((num) => num + 1);
+      }
+    }, 1000);
+    return () => {
+      clearInterval(timerId.current);
+    };
+  }, [ready, pause]);
+
+  //   useEffect(() => {
+  //     setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
+  //   }, [cardDeck]);
+
+  function startStop() {
+    if (pause) {
+      setPause(false);
+    } else {
+      setPause(true);
+    }
+  }
+  //   function initiateDraw() {
+  //     if (ready === false) {
+  //       setDraw(true);
+  //       clearInterval(timerId.current)
+  //     } else {
+  //       setDraw(false);
+  //     }
+  //   }
 
   function drawCard() {
     if (drawnCards.length < 52) {
@@ -31,19 +66,17 @@ const DrawCards = () => {
       setDrawnCards((drawnCards) => [...drawnCards, cardData]);
       return drawnCards;
     }
-    // } else {
-    //   setFullDeck(true);
-    //   setDrawnCards([]);
-    //   setFullDeck(false);
-    // }
   }
 
   function restart() {
+    console.log(pause);
+    // setPause(true);
     setFullDeck(true);
     setDrawnCards([]);
     setFullDeck(false);
     setCardDeck([]);
-    setReady(false);
+    setReady(true);
+    setNum(0);
   }
 
   //   useEffect(() => {
@@ -65,9 +98,15 @@ const DrawCards = () => {
 
   return (
     <div>
-      {cardDeck && drawnCards.length < 52 ? (
+      {ready ? (
         <div>
-          <button onClick={drawCard}>Draw Card</button>
+          <h3>{num}</h3>
+          {pause ? (
+            <button onClick={startStop}>Draw</button>
+          ) : (
+            <button onClick={startStop}>Pause</button>
+          )}
+
           <div>
             {drawnCards.map((c) => (
               <Card card={c} />
@@ -76,8 +115,8 @@ const DrawCards = () => {
         </div>
       ) : (
         <div>
-          <h3>Loading...</h3>
-          <button onClick={restart}>Draw New Deck of Cards</button>
+          <h3>All cards drawn</h3>
+          <button onClick={restart}>Shuffle</button>
         </div>
       )}
     </div>
