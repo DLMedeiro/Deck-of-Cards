@@ -1,41 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import PullCards from "./PullCards";
 import Card from "./Card";
 
 const DrawCards = () => {
-  const [cardDeck, setCardDeck] = useState([]);
-  // New deck of cards pulled from API and formatted for use through the application
-
   const [ready, setReady] = useState(false);
 
   const [drawnCards, setDrawnCards] = useState([]);
   const [fullDeck, setFullDeck] = useState(false);
+  const [num, setNum] = useState(drawnCards.length);
+  const [sendRequest, setSendRequest] = useState(false);
+  //   send use effect through onClick
 
-  async function drawDeck() {
-    const res = await axios.get(
-      "http://deckofcardsapi.com/api/deck/new/draw/?count=52"
-    );
-    // const deck = card.map(({value, suit}) => ({[value]: suit}))
-    const newDeck = res.data.cards.map(({ value, suit }) => [
-      `${value} of ${suit}`,
-    ]);
-    setCardDeck(newDeck);
-    setReady(true);
-    if (ready === true) {
-      setReady(false);
-      setDrawnCards([]);
-    } else {
-      setReady(true);
-    }
-    console(ready);
-  }
+  const [cardDeck, setCardDeck] = useState([]);
+  // New deck of cards pulled from API and formatted for use through the application
+  useEffect(() => {
+    axios
+      .get("http://deckofcardsapi.com/api/deck/new/draw/?count=52")
+      .then((res) => {
+        setCardDeck(
+          res.data.cards.map(({ value, suit }) => [`${value} of ${suit}`])
+        );
+      });
+  }, []);
 
-  function DrawCard() {
+  function drawCard() {
     if (drawnCards.length < 52) {
       const cardData = cardDeck[drawnCards.length];
       setDrawnCards((drawnCards) => [...drawnCards, cardData]);
-      console.log(drawnCards);
+      return drawnCards;
     } else {
       setFullDeck(true);
       setDrawnCards([]);
@@ -43,13 +36,28 @@ const DrawCards = () => {
     }
   }
 
+  //   useEffect(() => {
+  //     if (num < 52) {
+  //       drawCard();
+  //     } else {
+  //       setSendRequest(false);
+  //     }
+  //   }, [num, drawCard, sendRequest]);
+
+  //   useEffect(() => {
+  //     if (sendRequest) {
+  //       const interval = setInterval(() => {
+  //         setNum((num) => num + 1);
+  //       }, 100);
+  //       return () => clearInterval(interval);
+  //     }
+  //   }, [sendRequest, num]);
+
   return (
     <div>
-      <button onClick={drawDeck}>Draw a new deck</button>
-
-      {ready === true ? (
+      {cardDeck ? (
         <div>
-          <button onClick={DrawCard}>Draw Card</button>
+          <button onClick={drawCard}>Draw Card</button>
           <div>
             {drawnCards.map((c) => (
               <Card card={c} />
@@ -57,7 +65,7 @@ const DrawCards = () => {
           </div>
         </div>
       ) : (
-        <div></div>
+        <h3>Loading...</h3>
       )}
     </div>
   );
