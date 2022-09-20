@@ -9,7 +9,7 @@ const DrawCards = () => {
   const [draw, setDraw] = useState(false);
   const [drawnCards, setDrawnCards] = useState([]);
   const [num, setNum] = useState(0);
-  const [pause, setPause] = useState(true);
+  const [pause, setPause] = useState(false);
 
   const [fullDeck, setFullDeck] = useState(false);
   const [sendRequest, setSendRequest] = useState(false);
@@ -24,7 +24,6 @@ const DrawCards = () => {
         setCardDeck(
           res.data.cards.map(({ value, suit }) => [`${value} of ${suit}`])
         );
-        console.log(cardDeck);
         // setReady(true);
       });
   }, [draw]);
@@ -42,13 +41,17 @@ const DrawCards = () => {
 
   //   useEffect(() => {
   //     setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
-  //   }, [cardDeck]);
+  //   }, [num]);
 
   function startStop() {
-    if (pause) {
+    if (pause === true) {
       setPause(false);
+      console.log(pause);
+      console.log(cardDeck[num]);
     } else {
+      console.log(cardDeck[num]);
       setPause(true);
+      console.log(pause);
     }
   }
   //   function initiateDraw() {
@@ -62,15 +65,18 @@ const DrawCards = () => {
 
   function drawCard() {
     if (drawnCards.length < 52) {
-      const cardData = cardDeck[drawnCards.length];
-      setDrawnCards((drawnCards) => [...drawnCards, cardData]);
+      setDrawnCards((drawnCards) => [
+        ...drawnCards,
+        cardDeck[drawnCards.length],
+      ]);
       return drawnCards;
     }
   }
 
   function restart() {
+    setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
     console.log(pause);
-    // setPause(true);
+    setDraw(true);
     setFullDeck(true);
     setDrawnCards([]);
     setFullDeck(false);
@@ -96,16 +102,23 @@ const DrawCards = () => {
   //     }
   //   }, [sendRequest, num]);
 
+  //   setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
+
   return (
     <div>
       {ready ? (
         <div>
-          <h3>{num}</h3>
+          {/* <h3>
+            {}
+          </h3> */}
+          <h3>{cardDeck[num]}</h3>
           {pause ? (
             <button onClick={startStop}>Draw</button>
           ) : (
             <button onClick={startStop}>Pause</button>
           )}
+
+          <button onClick={drawCard}>Draw Single Card</button>
 
           <div>
             {drawnCards.map((c) => (
