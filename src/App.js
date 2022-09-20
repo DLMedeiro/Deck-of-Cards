@@ -1,10 +1,10 @@
 import "./App.css";
-import GetDeckOfCards from "./Deck";
+import DrawCards from "./DrawCards";
 
 function App() {
   return (
     <div className="App">
-      <GetDeckOfCards />
+      <DrawCards />
     </div>
   );
 }

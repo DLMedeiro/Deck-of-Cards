@@ -9,8 +9,21 @@ const GetDeckOfCards = () => {
   const [check, setCheck] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
   const [count, setCount] = useState(0);
+
+  //   State influences when a new deck is pulled
+  const [newDeck, setNewDeck] = useState(false);
   let num;
 
+  //   async function drawDeck() {
+  //     const res = await axios.get(
+  //       "http://deckofcardsapi.com/api/deck/new/draw/?count=52"
+  //     );
+  //     // const deck = card.map(({value, suit}) => ({[value]: suit}))
+  //     const cardDeck = res.data.cards.map(({ value, suit }) => [
+  //       `${value} of ${suit}`,
+  //     ]);
+  //     setCardDeck(cardDeck);
+  //   }
   useEffect(() => {
     async function drawDeck() {
       const res = await axios.get(
@@ -25,7 +38,12 @@ const GetDeckOfCards = () => {
       setCardDeck(cardDeck);
     }
     drawDeck();
-  }, [fullDeck]);
+  }, [newDeck]);
+
+  function pullNewDeck() {
+    setNewDeck(true);
+    console.log(setNewDeck);
+  }
 
   function counter(num) {
     num = num + 1;
@@ -35,11 +53,11 @@ const GetDeckOfCards = () => {
   const timer = () => {
     if (drawnCards.length > 52 || drawnCards.length == 0) {
       num = 0;
-      console.log(num);
+      //   console.log(num);
       setInterval(() => {
         num = num + 1;
         DrawCard(num);
-        console.log(drawnCards.length);
+        // console.log(drawnCards.length);
       }, 100);
     } else {
       num = drawnCards.length;
@@ -65,11 +83,11 @@ const GetDeckOfCards = () => {
     if (!isPaused) {
       setIsPaused(true);
       clearInterval(check);
-      console.log(isPaused);
+      //   console.log(isPaused);
     } else {
       setIsPaused(false);
       setCheck(null);
-      console.log(isPaused);
+      //   console.log(isPaused);
     }
 
     // console.log(`check = ${check}`)
@@ -96,13 +114,12 @@ const GetDeckOfCards = () => {
       const cardData = cardDeck[count];
       addCard(cardData);
       // console.log(`this1 ${count}`)
-      console.log(drawnCards.length);
+      //   console.log(drawnCards.length);
     } else {
       // console.log(`this2 ${count}`)
-      setDrawnCards([]);
+      //   setDrawnCards([]);
       setFullDeck(true);
       // setCount(0)
-      alert("No More Cards in Deck");
     }
   }
 
@@ -112,13 +129,22 @@ const GetDeckOfCards = () => {
 
   return (
     <div>
-      <button onClick={timer}>Draw Card</button>
-      {/* {check == null? <button onClick={counter}>Draw Card</button> : <button onClick={stop}>Stop</button>} */}
+      <button onClick={pullNewDeck}>Draw New Deck of Cards</button>
+
+      {/* <button onClick={timer}>Draw Card</button> */}
+      {check == null ? (
+        <button onClick={timer}>Draw Card</button>
+      ) : (
+        <button onClick={stop}>Stop</button>
+      )}
 
       <div>
-        {drawnCards.length === 0
-          ? "Draw a card to start"
+        {fullDeck == true
+          ? "No More Cards in Deck"
           : drawnCards.map((c) => <Card card={c} />)}
+        {/* {drawnCards.length === 0
+          ? "Draw a card to start"
+          : drawnCards.map((c) => <Card card={c} />)} */}
       </div>
     </div>
   );
