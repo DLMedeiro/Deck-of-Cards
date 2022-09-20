@@ -13,7 +13,7 @@ const DrawCards = () => {
   //   send use effect through onClick
 
   const [cardDeck, setCardDeck] = useState([]);
-  // New deck of cards pulled from API and formatted for use through the application
+  // New deck of cards pulled from API and formatted for use through the application. Only runs after the first render
   useEffect(() => {
     axios
       .get("http://deckofcardsapi.com/api/deck/new/draw/?count=52")
@@ -21,19 +21,29 @@ const DrawCards = () => {
         setCardDeck(
           res.data.cards.map(({ value, suit }) => [`${value} of ${suit}`])
         );
+        setReady(true);
       });
-  }, []);
+  }, [ready]);
 
   function drawCard() {
     if (drawnCards.length < 52) {
       const cardData = cardDeck[drawnCards.length];
       setDrawnCards((drawnCards) => [...drawnCards, cardData]);
       return drawnCards;
-    } else {
-      setFullDeck(true);
-      setDrawnCards([]);
-      setFullDeck(false);
     }
+    // } else {
+    //   setFullDeck(true);
+    //   setDrawnCards([]);
+    //   setFullDeck(false);
+    // }
+  }
+
+  function restart() {
+    setFullDeck(true);
+    setDrawnCards([]);
+    setFullDeck(false);
+    setCardDeck([]);
+    setReady(false);
   }
 
   //   useEffect(() => {
@@ -55,7 +65,7 @@ const DrawCards = () => {
 
   return (
     <div>
-      {cardDeck ? (
+      {cardDeck && drawnCards.length < 52 ? (
         <div>
           <button onClick={drawCard}>Draw Card</button>
           <div>
@@ -65,7 +75,10 @@ const DrawCards = () => {
           </div>
         </div>
       ) : (
-        <h3>Loading...</h3>
+        <div>
+          <h3>Loading...</h3>
+          <button onClick={restart}>Draw New Deck of Cards</button>
+        </div>
       )}
     </div>
   );
