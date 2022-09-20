@@ -7,7 +7,7 @@ const DrawCards = () => {
   const [cardDeck, setCardDeck] = useState([]);
   // New deck of cards pulled from API and formatted for use through the application
 
-  //   const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(false);
 
   const [drawnCards, setDrawnCards] = useState([]);
   const [fullDeck, setFullDeck] = useState(false);
@@ -21,7 +21,14 @@ const DrawCards = () => {
       `${value} of ${suit}`,
     ]);
     setCardDeck(newDeck);
-    // setReady(true);
+    setReady(true);
+    if (ready === true) {
+      setReady(false);
+      setDrawnCards([]);
+    } else {
+      setReady(true);
+    }
+    console(ready);
   }
 
   function DrawCard() {
@@ -40,13 +47,18 @@ const DrawCards = () => {
     <div>
       <button onClick={drawDeck}>Draw a new deck</button>
 
-      <button onClick={DrawCard}>Draw Card</button>
-
-      <div>
-        {drawnCards.map((c) => (
-          <Card card={c} />
-        ))}
-      </div>
+      {ready === true ? (
+        <div>
+          <button onClick={DrawCard}>Draw Card</button>
+          <div>
+            {drawnCards.map((c) => (
+              <Card card={c} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 };
