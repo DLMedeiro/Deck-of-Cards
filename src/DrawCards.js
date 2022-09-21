@@ -8,7 +8,7 @@ const DrawCards = () => {
   const [draw, setDraw] = useState(false);
   const [drawnCards, setDrawnCards] = useState([]);
   const [num, setNum] = useState(0);
-  const [pause, setPause] = useState(false);
+  const [pause, setPause] = useState(true);
   const [cardDeck, setCardDeck] = useState([]);
 
   //   get deck of cards from API
@@ -24,7 +24,7 @@ const DrawCards = () => {
 
   useEffect(() => {
     timerId.current = setInterval(() => {
-      if (pause === true && num <= 52) {
+      if (pause === false && num <= 52) {
         setNum((num) => num + 1);
       }
     }, 1000);
@@ -34,7 +34,7 @@ const DrawCards = () => {
   }, [ready, pause]);
 
   useEffect(() => {
-    if (pause === true && num > 0) {
+    if (pause === false && num >= 0) {
       setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
       console.log(drawnCards);
       console.log(num);
@@ -42,10 +42,10 @@ const DrawCards = () => {
   }, [num, pause]);
 
   function startStop() {
-    if (pause === true) {
-      setPause(false);
-    } else {
+    if (pause === false) {
       setPause(true);
+    } else {
+      setPause(false);
     }
   }
 
