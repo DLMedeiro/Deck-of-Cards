@@ -10,6 +10,8 @@ const DrawCards = () => {
   const [num, setNum] = useState(0);
   const [pause, setPause] = useState(false);
   const [cardDeck, setCardDeck] = useState([]);
+
+  //   get deck of cards from API
   useEffect(() => {
     axios
       .get("http://deckofcardsapi.com/api/deck/new/draw/?count=52")
@@ -22,15 +24,22 @@ const DrawCards = () => {
 
   useEffect(() => {
     timerId.current = setInterval(() => {
-      if (!pause) {
+      if (pause === true && num <= 52) {
         setNum((num) => num + 1);
-        drawCard(num);
       }
     }, 1000);
     return () => {
       clearInterval(timerId.current);
     };
   }, [ready, pause]);
+
+  useEffect(() => {
+    if (pause === true && num > 0) {
+      setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
+      console.log(drawnCards);
+      console.log(num);
+    }
+  }, [num, pause]);
 
   function startStop() {
     if (pause === true) {
@@ -40,15 +49,8 @@ const DrawCards = () => {
     }
   }
 
-  function drawCard() {
-    if (num < 52) {
-      setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
-      return drawnCards;
-    }
-  }
-
   function restart() {
-    setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
+    setPause(true);
     setDraw(true);
     setDrawnCards([]);
     setCardDeck([]);
@@ -67,8 +69,6 @@ const DrawCards = () => {
           ) : (
             <button onClick={startStop}>Pause</button>
           )}
-
-          <button onClick={drawCard}>Draw Single Card</button>
 
           <div>
             {drawnCards.map((c) => (
