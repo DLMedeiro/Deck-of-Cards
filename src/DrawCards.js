@@ -6,11 +6,9 @@ const DrawCards = () => {
   const timerId = useRef();
   const [ready, setReady] = useState(false);
   const [draw, setDraw] = useState(false);
-  const [drawnCards, setDrawnCards] = useState([]);
   const [num, setNum] = useState(0);
   const [pause, setPause] = useState(false);
   const [cardDeck, setCardDeck] = useState([]);
-  const [time, setTime] = useState(false);
   //   get deck of cards from API
 
   useEffect(() => {
@@ -27,52 +25,33 @@ const DrawCards = () => {
     setReady(true);
   }
   function togglePause() {
-    setPause((pause) => !pause);
+    if (pause) {
+      setPause(false);
+    } else if (!pause) {
+      setPause(true);
+    }
   }
 
-  function drawingCards() {
+  useEffect(() => {
     setDraw(true);
-    timerId.current = setInterval(() => {
-      if (num > 52) {
-        clearInterval(timerId.current);
-        return;
+    const interval = setInterval(() => {
+      if (!pause) {
+        if (num < 52) {
+          setNum((num) => num + 1);
+        } else {
+          clearInterval(interval);
+          return;
+        }
       }
-      if (pause) {
-        setNum(num);
-        return;
-      }
-      setNum((num) => num + 1);
-    }, 100);
-
-    return () => {
-      clearInterval(timerId.current);
-    };
-  }
-
-  // useEffect(() => {
-  //   if (pause === false && num >= 0) {
-  //     setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
-  //     console.log(drawnCards);
-  //     console.log(num);
-  //   }
-  // }, [num, pause]);
-
-  // function startStop() {
-  //   if (pause === false) {
-  //     setPause(true);
-  //   } else {
-  //     setPause(false);
-  //   }
-  // }
+    }, 1000);
+    return () => clearInterval(interval);
+  });
 
   function restart() {
-    clearInterval(timerId.current);
     setNum(0);
     setReady(false);
     setDraw(false);
     setPause(false);
-    // setDrawnCards([]);
-    // setCardDeck([]);
   }
 
   return (
@@ -86,7 +65,7 @@ const DrawCards = () => {
                 <div>
                   {pause ? (
                     <div>
-                      <button onClick={togglePause}>Start</button>
+                      <button onClick={togglePause}>Resume</button>
                     </div>
                   ) : (
                     <div>
@@ -95,7 +74,6 @@ const DrawCards = () => {
                   )}
                 </div>
 
-                <div>{num}</div>
                 <div>{cardDeck[num]}</div>
               </div>
             ) : (
@@ -104,7 +82,7 @@ const DrawCards = () => {
           </div>
         ) : (
           <div>
-            <button onClick={drawingCards}>Draw Cards</button>
+            <button onClick={togglePause}>Draw Cards</button>
           </div>
         )
       ) : (
