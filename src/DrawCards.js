@@ -8,7 +8,7 @@ const DrawCards = () => {
   const [draw, setDraw] = useState(false);
   const [drawnCards, setDrawnCards] = useState([]);
   const [num, setNum] = useState(0);
-  const [pause, setPause] = useState(true);
+  const [pause, setPause] = useState(false);
   const [cardDeck, setCardDeck] = useState([]);
   const [time, setTime] = useState(false);
   //   get deck of cards from API
@@ -26,20 +26,21 @@ const DrawCards = () => {
   function shuffle() {
     setReady(true);
   }
-
-  // function pullCard(num) {
-  //   if (num < 52) {
-  //     // setDrawnCards(cardDeck[num]);
-  //     num += 1;
-  //     console.log(num);
-  //   } else {
-  //     clearInterval(timerId.current);
-  //   }
-  // }
+  function togglePause() {
+    setPause((pause) => !pause);
+  }
 
   function drawingCards() {
     setDraw(true);
     timerId.current = setInterval(() => {
+      if (num > 52) {
+        clearInterval(timerId.current);
+        return;
+      }
+      if (pause) {
+        setNum(num);
+        return;
+      }
       setNum((num) => num + 1);
     }, 100);
 
@@ -49,41 +50,29 @@ const DrawCards = () => {
   }
 
   // useEffect(() => {
-  //   timerId.current = setInterval(() => {
-  //     if (pause === true && num <= 52) {
-  //       setNum((num) => num + 1);
-  //     }
-  //   }, 1000);
-  //   return () => {
-  //     clearInterval(timerId.current);
-  //   };
-  // }, [ready, pause]);
+  //   if (pause === false && num >= 0) {
+  //     setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
+  //     console.log(drawnCards);
+  //     console.log(num);
+  //   }
+  // }, [num, pause]);
 
-  useEffect(() => {
-    if (pause === false && num >= 0) {
-      setDrawnCards((drawnCards) => [...drawnCards, cardDeck[num]]);
-      console.log(drawnCards);
-      console.log(num);
-    }
-  }, [num, pause]);
-
-  function startStop() {
-    if (pause === false) {
-      setPause(true);
-    } else {
-      setPause(false);
-    }
-  }
+  // function startStop() {
+  //   if (pause === false) {
+  //     setPause(true);
+  //   } else {
+  //     setPause(false);
+  //   }
+  // }
 
   function restart() {
     clearInterval(timerId.current);
     setNum(0);
     setReady(false);
     setDraw(false);
-
-    setPause(true);
+    setPause(false);
     // setDrawnCards([]);
-    setCardDeck([]);
+    // setCardDeck([]);
   }
 
   return (
@@ -93,7 +82,22 @@ const DrawCards = () => {
           <div>
             <button onClick={restart}>Shuffle Deck</button>
             {num < 52 ? (
-              <div>{cardDeck[num]}</div>
+              <div>
+                <div>
+                  {pause ? (
+                    <div>
+                      <button onClick={togglePause}>Start</button>
+                    </div>
+                  ) : (
+                    <div>
+                      <button onClick={togglePause}>Pause</button>
+                    </div>
+                  )}
+                </div>
+
+                <div>{num}</div>
+                <div>{cardDeck[num]}</div>
+              </div>
             ) : (
               <div>No More Cards Available</div>
             )}
