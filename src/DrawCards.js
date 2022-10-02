@@ -7,7 +7,7 @@ const DrawCards = () => {
   const [ready, setReady] = useState(false);
   const [draw, setDraw] = useState(false);
   const [num, setNum] = useState(0);
-  const [pause, setPause] = useState(false);
+  const [pause, setPause] = useState(true);
   const [cardDeck, setCardDeck] = useState([]);
   //   get deck of cards from API
 
@@ -15,14 +15,13 @@ const DrawCards = () => {
     axios
       .get("http://deckofcardsapi.com/api/deck/new/draw/?count=52")
       .then((res) => {
-        setCardDeck(
-          res.data.cards.map(({ value, suit }) => [`${value} of ${suit}`])
-        );
+        setCardDeck(res.data.cards.map(({ image }) => image));
       });
   }, [ready]);
 
   function shuffle() {
     setReady(true);
+    setDraw(true);
   }
   function togglePause() {
     if (pause) {
@@ -33,25 +32,27 @@ const DrawCards = () => {
   }
 
   useEffect(() => {
-    setDraw(true);
-    const interval = setInterval(() => {
+    let interval = setInterval(() => {
       if (!pause) {
         if (num < 52) {
           setNum((num) => num + 1);
+          console.log(pause);
         } else {
           clearInterval(interval);
           return;
         }
       }
-    }, 1000);
+    }, 100);
     return () => clearInterval(interval);
   });
 
   function restart() {
+    clearInterval();
     setNum(0);
     setReady(false);
     setDraw(false);
     setPause(false);
+    setCardDeck([]);
   }
 
   return (
@@ -59,7 +60,7 @@ const DrawCards = () => {
       {ready ? (
         draw ? (
           <div>
-            <button onClick={restart}>Shuffle Deck</button>
+            <button onClick={restart}>Re-Shuffle</button>
             {num < 52 ? (
               <div>
                 <div>
@@ -74,7 +75,13 @@ const DrawCards = () => {
                   )}
                 </div>
 
-                <div>{cardDeck[num]}</div>
+                <div>
+                  <div>{num}</div>
+                  <Card card={cardDeck[num]} />
+                </div>
+                {/* <div style={{ backgroundImage: "url(" + cardDeck[num] + ")" }}>
+                  {cardDeck[num]}
+                </div> */}
               </div>
             ) : (
               <div>No More Cards Available</div>
@@ -87,8 +94,9 @@ const DrawCards = () => {
         )
       ) : (
         <div>
-          <h3>Shuffle Deck</h3>
-          <button onClick={shuffle}>Shuffle</button>
+          <button className="shuffle" onClick={shuffle}>
+            Shuffle Cards
+          </button>
         </div>
       )}
     </div>
