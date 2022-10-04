@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Card from "./Card";
 
 const DrawCards = () => {
-  const timerId = useRef();
   const [ready, setReady] = useState(false);
   const [draw, setDraw] = useState(false);
   const [num, setNum] = useState(0);
   const [pause, setPause] = useState(true);
   const [cardDeck, setCardDeck] = useState([]);
-  //   get deck of cards from API
 
   useEffect(() => {
     axios
@@ -18,14 +16,16 @@ const DrawCards = () => {
         console.log(res);
         setCardDeck(res.data.cards.map(({ image }) => image));
       });
-  }, []);
+  }, [ready]);
 
   function shuffle() {
     setReady(true);
-    setDraw(true);
     setPause(true);
   }
   function togglePause() {
+    if (pause && !draw) {
+      setDraw(true);
+    }
     if (pause) {
       setPause(false);
     } else if (!pause) {
@@ -47,12 +47,6 @@ const DrawCards = () => {
     }, 1000);
     return () => clearInterval(interval);
   });
-
-  // useEffect(() => {
-  //   if (num > 52) {
-  //     clearInterval(interval);
-  //   }
-  // }, [num]);
 
   function restart() {
     clearInterval();
@@ -84,7 +78,6 @@ const DrawCards = () => {
                 </div>
 
                 <div>
-                  {/* <div>{num}</div> */}
                   <Card card={cardDeck[num]} />
                 </div>
               </div>
