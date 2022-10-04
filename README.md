@@ -1,6 +1,6 @@
 # Deck of Cards
 
-[Check it out here](https://dlmedeiro.github.io/Deck-Of-Cards/)
+Check it out at: https://dlmedeiro.github.io/Deck-of-Cards/
 
 
 Application that displays a deck of cards, one card at a time.
