@@ -1,32 +1,38 @@
 # Deck of Cards
 
+[Check it out here](https://dlmedeiro.github.io/Deck-Of-Cards/)
+
+
 Application that displays a deck of cards, one card at a time.
 
 Utilizes the [Deck of Cards API](http://deckofcardsapi.com/) for the creation of a full deck of cards.
 
-------------------------------
-
-__Draw Card Button:__ 
-
-Every time this button is clicked a new card is displayed, until there are no cards left in the deck.
-
-If the button is clicked when there are no cards remaining, an alert message will appear on the screen with the text “Error: no cards remaining!”.
+This project practices the use of React State. 
 
 ------------------------------
 
-__Draw Deck Button:__
+__Shuffle Cards:__
 
-Part 2: Click to Keep Drawing
+Pull a new deck of cards from the [Deck of Cards API](http://deckofcardsapi.com/)
+
+------------------------------
+__Draw Cards:__ 
 
 When this button is clicked the page will draw one card every second.
 
-These draws will continue until the button is pressed again, or until the deck has been exhausted, at which point the "no cards remaining" message will appear again. 
+These draws will continue until the __pause__ button is pressed, or until the deck has been exhausted, at which point the "no cards remaining" message will appear again. 
 
------------------------------------
+Automated drawing can be started and stopped as long as cards remain.
 
-__Shuffle Deck Button:__
+<!-- Every time this button is clicked a new card is displayed, until there are no cards left in the deck.
 
-Allows a user to start drawing from a full deck without refreshing the page.
+If the button is clicked when there are no cards remaining, an alert message will appear on the screen with the text “Error: no cards remaining!”. -->
+
+------------------------------
+
+__Re-Shuffle:__
+
+Start over and pull a new deck of cards from the [Deck of Cards API](http://deckofcardsapi.com/)
 
 ## Available Scripts
 
