@@ -1,3 +1,6 @@
 .card {
-    height: 1000px;
+    width: 300px;
+    height: 400px;
+    background-repeat: no-repeat;
+    background-position: center;
 }

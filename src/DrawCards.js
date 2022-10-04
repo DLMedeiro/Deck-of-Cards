@@ -13,15 +13,17 @@ const DrawCards = () => {
 
   useEffect(() => {
     axios
-      .get("http://deckofcardsapi.com/api/deck/new/draw/?count=52")
+      .get("https://deckofcardsapi.com/api/deck/new/draw/?count=52")
       .then((res) => {
+        console.log(res);
         setCardDeck(res.data.cards.map(({ image }) => image));
       });
-  }, [ready]);
+  }, []);
 
   function shuffle() {
     setReady(true);
     setDraw(true);
+    setPause(true);
   }
   function togglePause() {
     if (pause) {
@@ -33,7 +35,7 @@ const DrawCards = () => {
 
   useEffect(() => {
     let interval = setInterval(() => {
-      if (!pause) {
+      if (!pause && ready) {
         if (num < 52) {
           setNum((num) => num + 1);
           console.log(pause);
@@ -42,9 +44,15 @@ const DrawCards = () => {
           return;
         }
       }
-    }, 100);
+    }, 1000);
     return () => clearInterval(interval);
   });
+
+  // useEffect(() => {
+  //   if (num > 52) {
+  //     clearInterval(interval);
+  //   }
+  // }, [num]);
 
   function restart() {
     clearInterval();
@@ -66,7 +74,7 @@ const DrawCards = () => {
                 <div>
                   {pause ? (
                     <div>
-                      <button onClick={togglePause}>Resume</button>
+                      <button onClick={togglePause}>Draw</button>
                     </div>
                   ) : (
                     <div>
@@ -76,12 +84,9 @@ const DrawCards = () => {
                 </div>
 
                 <div>
-                  <div>{num}</div>
+                  {/* <div>{num}</div> */}
                   <Card card={cardDeck[num]} />
                 </div>
-                {/* <div style={{ backgroundImage: "url(" + cardDeck[num] + ")" }}>
-                  {cardDeck[num]}
-                </div> */}
               </div>
             ) : (
               <div>No More Cards Available</div>
