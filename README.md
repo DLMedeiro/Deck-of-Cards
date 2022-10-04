@@ -7,7 +7,7 @@ Application that displays a deck of cards, one card at a time.
 
 Utilizes the [Deck of Cards API](http://deckofcardsapi.com/) for the creation of a full deck of cards.
 
-This project practices the use of React State. 
+This project practices the use of useState and UseEffect.
 
 ------------------------------
 
